@@ -47,6 +47,11 @@ docker compose up --build
 3. **Room 出菇室**：`shedId`、`roomCode`、`species`、`capacityBags`、`status(fruiting|idle|sanitize)`；同菇房 `roomCode` 唯一
 4. **ClimateLog 环境记录**：`roomId`、`recordedAt`、`tempC`、`humidityPct`、`co2Ppm`、`notes`；`humidityPct ∈ [1,100]`，否则 **400**
 5. **FlushHarvest 采收**：`roomId`、`harvestedAt`、`flushNo(≥1)`、`weightKg`、`grade(A|B|C)`、`operatorName`；`weightKg > 0`，否则 **400**
+   - **等级冻结**：`grade` 写下后不再修改。改判另记 **GradeAppeal**（`harvestId`、`nextGrade`、`reason`、`appealedAt`），绝不覆盖原等级。
+   - `POST /api/flush-harvests/{id}/appeals` 提交一笔改判：`nextGrade` 只接受 `A/B/C`，且**不能等于当前有效等级**；`reason` 去掉首尾空白后至少 6 个字。同一潮次可挂多笔。
+   - **有效等级（effectiveGrade）选取**：取该采收全部改判中 `appealedAt` **最晚**的一笔的 `nextGrade`；`appealedAt` 相同时取 **id 更大**者；没有任何改判时，有效等级就是原 `grade`。
+   - 列表 `GET /api/flush-harvests` 与单条 `GET /api/flush-harvests/{id}` 都返回 `originalGrade`、`effectiveGrade`、`appealCount`（及 `appeals` 各笔），两处有效等级口径完全相同。
+   - `GET /api/flush-harvests/grade-mix` 按**有效等级**汇总公斤，与把列表按 `effectiveGrade` 分组相加的结果一致（误差 ≤ 0.001 kg）。
 6. **Dashboard**：`shedTotal`、`fruitingRoomCount`、`climateLast24h`、`harvestKgLast7d`
 
 各实体 API：`GET/POST` 列表与创建、`DELETE` 按 ID 删除。
