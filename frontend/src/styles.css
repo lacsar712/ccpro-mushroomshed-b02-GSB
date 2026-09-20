@@ -357,3 +357,68 @@ th {
     grid-column: auto;
   }
 }
+
+/* 改判 GradeAppeal 区 */
+.appeal-row > td {
+  padding: 0;
+  background: var(--spore-mist);
+}
+
+.appeal-box {
+  padding: 14px 18px;
+}
+
+.appeal-current {
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appeal-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.appeal-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.appeal-form .appeal-reason {
+  flex: 1 1 260px;
+}
+
+.appeal-form input,
+.appeal-form select {
+  padding: 7px 10px;
+}
+
+.appeal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.appeal-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.appeal-reason-text {
+  flex: 1 1 200px;
+}

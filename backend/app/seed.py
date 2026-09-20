@@ -4,6 +4,7 @@ from app.auth import hash_password
 from app.database import SessionLocal
 from app.models.climate_log import ClimateLog
 from app.models.flush_harvest import FlushHarvest
+from app.models.grade_appeal import GradeAppeal
 from app.models.room import Room
 from app.models.shed import Shed
 from app.models.user import User
@@ -111,29 +112,49 @@ def seed() -> None:
                         co2_ppm=690.0,
                         notes=None,
                     ),
-                    FlushHarvest(
-                        room_id=r1.id,
-                        harvested_at=now - timedelta(hours=6),
-                        flush_no=2,
-                        weight_kg=42.5,
-                        grade="A",
-                        operator_name="出菇员",
+                ]
+            )
+            h1 = FlushHarvest(
+                room_id=r1.id,
+                harvested_at=now - timedelta(hours=6),
+                flush_no=2,
+                weight_kg=42.5,
+                grade="A",
+                operator_name="出菇员",
+            )
+            h2 = FlushHarvest(
+                room_id=r1.id,
+                harvested_at=now - timedelta(days=1),
+                flush_no=1,
+                weight_kg=38.0,
+                grade="B",
+                operator_name="场长",
+            )
+            h3 = FlushHarvest(
+                room_id=r3.id,
+                harvested_at=now - timedelta(days=3),
+                flush_no=1,
+                weight_kg=55.2,
+                grade="A",
+                operator_name="出菇员",
+            )
+            db.add_all([h1, h2, h3])
+            db.flush()
+
+            # h2 原判 B，挂两笔改判：最新一笔（5 小时前）改为 A，故有效等级为 A
+            db.add_all(
+                [
+                    GradeAppeal(
+                        harvest_id=h2.id,
+                        next_grade="C",
+                        reason="初评偏严，菇形完整度复核达标改 C",
+                        appealed_at=now - timedelta(hours=20),
                     ),
-                    FlushHarvest(
-                        room_id=r1.id,
-                        harvested_at=now - timedelta(days=1),
-                        flush_no=1,
-                        weight_kg=38.0,
-                        grade="B",
-                        operator_name="场长",
-                    ),
-                    FlushHarvest(
-                        room_id=r3.id,
-                        harvested_at=now - timedelta(days=3),
-                        flush_no=1,
-                        weight_kg=55.2,
-                        grade="A",
-                        operator_name="出菇员",
+                    GradeAppeal(
+                        harvest_id=h2.id,
+                        next_grade="A",
+                        reason="复检发现开伞率偏高，最终定为 A 等外处理",
+                        appealed_at=now - timedelta(hours=5),
                     ),
                 ]
             )

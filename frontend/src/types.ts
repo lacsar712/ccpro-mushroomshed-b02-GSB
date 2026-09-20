@@ -27,6 +27,14 @@ export interface ClimateLog {
   notes?: string | null
 }
 
+export interface GradeAppeal {
+  id: number
+  harvestId: number
+  nextGrade: HarvestGrade
+  reason: string
+  appealedAt: string
+}
+
 export interface FlushHarvest {
   id: number
   roomId: number
@@ -35,6 +43,20 @@ export interface FlushHarvest {
   weightKg: number
   grade: HarvestGrade
   operatorName: string
+  originalGrade: HarvestGrade
+  effectiveGrade: HarvestGrade
+  appealCount: number
+  appeals: GradeAppeal[]
+}
+
+export interface GradeMixItem {
+  grade: HarvestGrade
+  weightKg: number
+}
+
+export interface GradeMix {
+  mix: GradeMixItem[]
+  totalKg: number
 }
 
 export interface DashboardStats {
